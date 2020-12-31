@@ -108,7 +108,7 @@ export default {
         payload: [...receiveList, ..._.get(msgs, "messages", [])],
       });
       let newMsg;
-      _.map(receiveList, (item) => {
+      _.map(_.get(msgs, "messages", []), (item) => {
         if (!_.isEmpty(chatInfo) && item.from_username === chatInfo.username) {
           const content = item.content;
           newMsg = {
@@ -153,7 +153,6 @@ export default {
       return { ...state, chatInfo };
     },
     updateConversationList(state, { payload: conversationList }) {
-      console.log(111111111, conversationList);
       return { ...state, conversationList };
     },
     updateAllChatList(state, { payload: allChatList }) {

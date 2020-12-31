@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "dva";
-import { message, Input, Badge } from "antd";
+import { message, Input, Badge, notification } from "antd";
 import dayJS from "dayjs";
+import _ from "lodash";
 
 import styles from "./index.less";
 import defaultAvatar from "../../assets/avatar.png";
@@ -59,9 +60,23 @@ const HomePage = ({
   const onMsgReceive = () => {
     if (JIM) {
       JIM.onMsgReceive((data) => {
+        console.log(11111111, data);
         dispatch({
           type: "jim/receiveNewMessage",
           payload: data,
+        });
+        _.map(_.get(data, "messages"), (item) => {
+          notification.destroy();
+          notification.info({
+            placement: "bottomRight",
+            message: item.from_username,
+            description:
+              _.get(item, "content.msg_type") === "text"
+                ? _.get(item, "content.msg_body.text")
+                : _.get(item, "content.msg_type") === "image"
+                ? "发送个您一张图片"
+                : "",
+          });
         });
         getConversation();
         scrollToBottom();
